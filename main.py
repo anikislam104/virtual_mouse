@@ -5,7 +5,8 @@ cap=cv2.VideoCapture(0)
 hand_detector=mp.solutions.hands.Hands()
 drawing_utils=mp.solutions.drawing_utils
 screen_width,screen_height=pag.size()
-
+index_x=0
+index_y=0
 while True:
     _, frame = cap.read()
     frame = cv2.flip(frame, 1)
@@ -21,12 +22,21 @@ while True:
             for id,landmark in enumerate(landmarks):
                 x=int(landmark.x*frame_width)
                 y=int(landmark.y*frame_height)
-                print(x,y)
+                # print(x,y)
                 if id==8:
                     cv2.circle(frame, (x,y), 20, (0,255,255))
                     index_x=screen_width/frame_width*x
                     index_y=screen_height/frame_height*y
                     pag.moveTo(index_x,index_y)
+                if id==4:
+                    cv2.circle(frame, (x,y), 20, (0,255,255))
+                    thumb_x=screen_width/frame_width*x
+                    thumb_y=screen_height/frame_height*y
+                    # print(abs(thumb_y-index_y))
+                    if abs(thumb_y-index_y)<20:
+                        # print('click')
+                        pag.click()
+                        pag.sleep(1)
                 # cv2.circle(frame, (x,y), 20, (0,255,255))
     cv2.imshow('frame', frame)
     cv2.waitKey(1)
